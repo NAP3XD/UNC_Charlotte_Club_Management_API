@@ -1,4 +1,4 @@
-// database seed file, **** UPDATE FOR NEW ENTIES *********
+// please run this file with 'npm run seed' to populate the database with sample data
 import { PrismaClient } from '../src/generated/prisma/index.js';
 import bcrypt from 'bcrypt';
 
@@ -7,16 +7,18 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Starting seed...');
 
-  // Clear existing data
+  // Clear the existing data (if any)
+  await prisma.eventRSVP.deleteMany();
+  await prisma.event.deleteMany();
   await prisma.clubAnnouncement.deleteMany();
   await prisma.clubMembership.deleteMany();
   await prisma.club.deleteMany();
   await prisma.user.deleteMany();
 
-  // Hash password for all users (using 'password123' as default)
+  // default pass for all test users 'password123' 
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  // Create API Admins
+  // API admins
   const apiAdmins = await Promise.all([
     prisma.user.create({
       data: {
@@ -44,9 +46,9 @@ async function main() {
     }),
   ]);
 
-  console.log('✓ Created API Admins:', apiAdmins.map(u => u.name).join(', '));
+  console.log('Created API Admins:', apiAdmins.map(u => u.name).join(', '));
 
-  // Create Club Members
+  // some club members
   const clubMembers = await Promise.all([
     prisma.user.create({
       data: {
@@ -72,11 +74,19 @@ async function main() {
         role: 'CLUB_MEMBER',
       },
     }),
+    prisma.user.create({
+      data: {
+        email: 'tonyhawk@uncc.edu',
+        password: hashedPassword,
+        name: 'Tony Hawk',
+        role: 'CLUB_MEMBER',
+      },
+    }),
   ]);
 
   console.log('✓ Created Club Members:', clubMembers.map(u => u.name).join(', '));
 
-  // Create Clubs (using first API admin as the admin for all clubs initially)
+  // a few clubs
   const clubs = await Promise.all([
     prisma.club.create({
       data: {
@@ -108,11 +118,10 @@ async function main() {
     }),
   ]);
 
-  console.log('✓ Created Clubs:', clubs.map(c => c.name).join(', '));
+  console.log('Created Clubs:', clubs.map(c => c.name).join(', '));
 
-  // Add some club memberships as examples
+  // default users joining clubs
   await Promise.all([
-    // Nicholas joins UNCC_Skateboarding and Archery
     prisma.clubMembership.create({
       data: {
         userId: clubMembers[0].id,
@@ -125,31 +134,42 @@ async function main() {
         clubId: clubs[3].id,
       },
     }),
-    // Moses joins 49th Security Division
     prisma.clubMembership.create({
       data: {
         userId: clubMembers[1].id,
         clubId: clubs[1].id,
       },
     }),
-    // Dante joins 49er Drone Club
     prisma.clubMembership.create({
       data: {
         userId: clubMembers[2].id,
         clubId: clubs[2].id,
       },
     }),
+    prisma.clubMembership.create({
+      data: {
+        userId: clubMembers[3].id,
+        clubId: clubs[0].id,
+      },
+    }),
   ]);
 
-  console.log('✓ Created sample club memberships');
+  console.log('Created sample club memberships');
 
-  // Create some sample announcements
+  // some sample announcements
   await Promise.all([
     prisma.clubAnnouncement.create({
       data: {
         clubId: clubs[0].id,
         title: 'Welcome to UNCC Skateboarding!',
-        content: 'Join us every Friday at 4 PM at the campus skate park.',
+        content: 'Join us every Friday at 4 PM at the Star Quad.',
+      },
+    }),
+    prisma.clubAnnouncement.create({
+      data: {
+        clubId: clubs[0].id,
+        title: 'Spring Sk8 Tournament',
+        content: 'Get ready for our annual Spring Sk8 Tournament! Join us for an action-packed day of skateboarding competition. All skill levels welcome. Registration opens March 1st.',
       },
     }),
     prisma.clubAnnouncement.create({
@@ -161,7 +181,90 @@ async function main() {
     }),
   ]);
 
-  console.log('✓ Created sample announcements');
+  console.log('Created sample announcements');
+
+  // sample events
+  const events = await Promise.all([
+    prisma.event.create({
+      data: {
+        clubId: clubs[0].id,
+        title: 'Spring Sk8 Tournament',
+        description: 'Annual skateboarding competition featuring street and vert competitions. Prizes for top 3 in each category!',
+        location: 'UNCC Campus Skate Park',
+        eventDate: new Date('2025-04-15T14:00:00'),
+      },
+    }),
+    prisma.event.create({
+      data: {
+        clubId: clubs[0].id,
+        title: 'Beginner Skateboarding Workshop',
+        description: 'Learn the basics of skateboarding in a safe and fun environment. All equipment provided.',
+        location: 'UNCC Campus Skate Park',
+        eventDate: new Date('2025-03-20T16:00:00'),
+      },
+    }),
+    prisma.event.create({
+      data: {
+        clubId: clubs[1].id,
+        title: 'Capture The Flag Competition',
+        description: 'Test your hacking skills in our CTF competition. Prizes for winners!',
+        location: 'Woodward Hall - Room 210',
+        eventDate: new Date('2025-03-25T18:00:00'),
+      },
+    }),
+    prisma.event.create({
+      data: {
+        clubId: clubs[2].id,
+        title: 'Drone Racing Championship',
+        description: 'Show off your piloting skills in our annual drone racing event.',
+        location: 'North Quad',
+        eventDate: new Date('2025-04-10T13:00:00'),
+      },
+    }),
+  ]);
+
+  console.log('Created sample events');
+
+  // some event RSVPs
+  await Promise.all([
+    prisma.eventRSVP.create({
+      data: {
+        userId: clubMembers[0].id,
+        eventId: events[0].id,
+        status: 'ATTENDING',
+      },
+    }),
+    prisma.eventRSVP.create({
+      data: {
+        userId: clubMembers[3].id,
+        eventId: events[0].id,
+        status: 'ATTENDING',
+      },
+    }),
+    prisma.eventRSVP.create({
+      data: {
+        userId: clubMembers[3].id,
+        eventId: events[1].id,
+        status: 'ATTENDING',
+      },
+    }),
+    prisma.eventRSVP.create({
+      data: {
+        userId: clubMembers[1].id,
+        eventId: events[2].id,
+        status: 'ATTENDING',
+      },
+    }),
+    prisma.eventRSVP.create({
+      data: {
+        userId: clubMembers[2].id,
+        eventId: events[3].id,
+        status: 'ATTENDING',
+      },
+    }),
+  ]);
+
+  console.log('Created sample event RSVPs');
   console.log('\nSeed completed successfully!');
   console.log('\nDefault credentials for all users:');
   console.log('Password: password123');
