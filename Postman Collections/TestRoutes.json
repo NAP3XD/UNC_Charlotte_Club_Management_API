@@ -1,0 +1,14 @@
+{
+	"info": {
+		"_postman_id": "7e571915-28c3-4a9a-b9a8-aac92f256e2e",
+		"name": "UNCC_Club_Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "MemberRoutes",
+			"item": [],
+			"id": "92db9ebd-8e18-42ff-aaa1-56f27ad11838"
+		}
+	]
+}
