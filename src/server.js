@@ -13,10 +13,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-app.use('/users', userRoutes);
-app.use('/clubs', clubRoutes);
-app.use('/events', eventRoutes);
-app.use('/announcements', announcementRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/clubs', clubRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/announcements', announcementRoutes);
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
