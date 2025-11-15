@@ -7,7 +7,20 @@
 	"item": [
 		{
 			"name": "SignUp-LogIn",
-			"item": [],
+			"item": [
+				{
+					"name": "New Request",
+					"id": "70fc8547-f3cf-431e-8ee4-78a2092d2569",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			],
 			"id": "92db9ebd-8e18-42ff-aaa1-56f27ad11838"
 		}
 	]
