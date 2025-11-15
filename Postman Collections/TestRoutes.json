@@ -33,5 +33,38 @@
 			],
 			"id": "92db9ebd-8e18-42ff-aaa1-56f27ad11838"
 		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8ca3b966-cf62-4ad2-b0f8-007c48fe4189",
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "63f0ea7e-c579-42d0-bd73-52a61a095ce9",
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"let jsonData = pm.response.json();\r",
+					"\r",
+					"if (jsonData.token) {\r",
+					"    pm.environment.set(\"bearerToken\", jsonData.token);\r",
+					"    console.log(\"Token saved:\", jsonData.token);\r",
+					"} else {\r",
+					"    console.log(\"Token not found in response\");\r",
+					"}"
+				]
+			}
+		}
 	]
 }
